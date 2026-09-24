@@ -132,6 +132,55 @@ LangChannel ch = ld_detect(text, strlen(text));
 Serial.printf("lang=%s in %lu us\n", ld_channel_name(ch), (unsigned long)(micros() - t0));
 ```
 
+## Why trigrams? Comparison with simpler alternatives
+
+The same pipeline and held-out set were used to evaluate the obvious
+alternatives. Each model uses its own best-looking thresholds from a small
+sweep; "English FP" is how many of the 16,500 English sentences would leave
+the public channel. Recall is the share of sentences routed to the right
+channel.
+
+| model | table | English FP | PL | SK | DE | SK, no accents |
+|---|---:|---:|---:|---:|---:|---:|
+| bigrams (every bigram, dense table) | 7 KB | 2 | 98.0% | 94.8% | 94.9% | 71% |
+| **trigrams, loose thresholds** | 16 KB | 0 | 97.9% | 95.0% | 99.4% | 90% |
+| **trigrams, shipped thresholds** | 16 KB | 0 | 94.7% | 85.7% | 97.6% | 80% |
+| 4-grams | 16 KB | 0 | 91.0% | 83.6% | 99.1% | 79% |
+| 4-grams | 32 KB | 0 | 94.5% | 89.3% | 99.3% | 86% |
+| word list (2000 most frequent words) | 16 KB | 0 | 86.3% | 88.1% | 99.1% | 83% |
+
+* **Bigrams** are the only real competitor. The full 55x55 table fits in 7 KB
+  and can be indexed directly (no binary search), so it is even faster. But a
+  bigram carries less evidence: it produced the only English false positives
+  in the experiment and loses badly on accent-less Slovak, the case you will
+  actually see on a mesh. With very tight flash, bigrams plus stricter
+  thresholds would still be defensible.
+* **4-grams** are more specific but much sparser (130k distinct 4-grams vs.
+  21k trigrams), so a 2000-entry table covers far less text. They only catch
+  up at double the flash.
+* **Word lists** work for German, whose function words are frequent and
+  fixed, but not for Polish and Slovak: heavy inflection means a 2000-word
+  budget covers few of the forms that occur, and a short message holds only
+  two or three words of evidence anyway. Czech vs. Slovak also got worse.
+* **Diacritics only** (ł ą ę ż = Polish, ľ ť ô ä = Slovak, ß ü ö = German) is
+  a few lines with no table, but fails exactly where it matters, since many
+  users type without accents, and it says nothing about English. It would be
+  a fine cheap first stage, not a replacement.
+* **Rank-order n-gram profiles** (Cavnar-Trenkle / "TextCat") need similar
+  storage and code and typically score slightly below the Naive Bayes costs
+  used here.
+* **A small linear classifier** over hashed n-gram features could squeeze a
+  few points out of the same 16 KB, but the thresholds dominate behaviour
+  anyway and training becomes less transparent.
+
+The decision rule is independent of the features, so every variant shares the
+same "err on the public side" logic. Note the "loose thresholds" row: the
+shipped constants are deliberately strict, and relaxing them to
+`--t-en 32 --t-other 24 --min-trigrams 8 --per-trigram 0` buys ~10 points of
+Slovak recall on short one-liners while still keeping all 16,500 English
+sentences public. That is the knob to turn after watching real traffic,
+rather than changing the model.
+
 ## Tuning
 
 All knobs are `#define`s at the top of `lang_model.h`:
