@@ -7,8 +7,11 @@ conservative: a message is only routed away from the public channel when the
 whole message very clearly leans one way.
 
 * header-only C++ (`lang_detect.h`, ~100 lines), no heap, no floats, no STL
-* model tables (`lang_model.h`) are 16 KB of `const` data (2000 trigrams)
-* ~1 µs per message on a laptop; one binary search per character on an MCU
+* model tables (`lang_model.h`) are 16 KB of `const` data (2000 trigrams);
+  a Cortex-M4 build is 16.7 KB in total, i.e. ~500 bytes of code
+* measured 0.85 µs per 60-character message on an Apple M1; estimated
+  ~50 µs on an ESP32-S3 (Heltec V3, T-Deck) and ~0.2 ms on an nRF52840
+  (RAK4631, T-Echo), see [Timing](#timing)
 * handles UTF-8, upper/lower case, and text typed **without diacritics**
   (`Dakujem za odpoved` is recognised as Slovak, `Hoert mich jemand` as German)
 
@@ -102,6 +105,32 @@ from Slovak, and for a Slovak community that is probably what you want. If
 not, retrain with `--with-czech`: Czech becomes a fifth class that routes to
 the public channel. That makes Slovak vs. Czech a real contest, and Slovak
 recall drops from ~86% to ~58% on short sentences, so it is off by default.
+
+## Timing
+
+Measured with `make bench` (four ~60-character messages, 80,000 runs):
+
+| device | clock | per message | per byte | source |
+|---|---:|---:|---:|---|
+| Apple M1 (laptop) | 3.2 GHz | 0.85 µs | 12.5 ns (~40 cycles) | measured |
+| ESP32-S3 (Heltec V3, LilyGo T-Deck) | 240 MHz | ~50 µs | ~0.7 µs | estimate |
+| nRF52840 (RAK4631, LilyGo T-Echo) | 64 MHz | ~0.2 ms | ~3 µs | estimate |
+
+The embedded numbers are estimates, not measurements: the work per byte is
+one UTF-8 decode plus an 11-step binary search over 2000 keys, which on an
+in-order MCU core with flash wait states and no branch predictor costs
+roughly 4-6x the M1's ~40 cycles per byte. Either way it is negligible next
+to a LoRa packet (hundreds of milliseconds on air). The code size on
+Cortex-M4 (`clang++ --target=thumbv7em-none-eabi -mcpu=cortex-m4 -Os`) is
+16,708 bytes including the tables.
+
+To measure on your own board:
+
+```cpp
+uint32_t t0 = micros();
+LangChannel ch = ld_detect(text, strlen(text));
+Serial.printf("lang=%s in %lu us\n", ld_channel_name(ch), (unsigned long)(micros() - t0));
+```
 
 ## Tuning
 
