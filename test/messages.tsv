@@ -1,0 +1,63 @@
+# expected<TAB>message   -- realistic mesh chat messages; run: make test
+# ---- English / must stay on the public channel ----
+EN	Hi all, testing my new node from the hill, anyone hearing this?
+EN	Anyone around? Just set up a repeater on the roof.
+EN	Hello from Vienna! Solar node, 5 dBi antenna, 22 dBm.
+EN	ok
+EN	test
+EN	73
+EN	hello
+EN	thanks
+EN	Good morning
+EN	lol nice one
+EN	Node OK-1234 online, battery 87%
+EN	RSSI -112 SNR -8.5 on the last packet, not great
+EN	https://meshcore.co.uk/ has the firmware
+EN	Tom was under suspicion for murder.
+EN	Murderer!
+EN	Best regards, Peter
+EN	Copy that, will try again tomorrow morning around 8.
+EN	Weather is nice today, going hiking to the peak with the T-Deck.
+EN	What is the max hop count on this mesh?
+EN	Received you loud and clear from the tower.
+EN	Hi Marek, Krakow node here? Not sure I read your callsign right.
+EN	I am from Bratislava but I write in English so everybody understands.
+EN	Testing ... does anybody copy? Node on Kahlenberg.
+EN	🙂👍
+EN	12345 67890
+# ---- mixed / ambiguous / other languages -> public ----
+EN	Hello everyone, dzień dobry, guten Tag, dobrý deň!
+EN	Привет всем, кто меня слышит?
+EN	Salut tout le monde, quelqu'un m'entend?
+EN	Ciao a tutti, qualcuno mi sente?
+EN	Hola a todos, alguien me escucha desde Madrid?
+# ---- Polish ----
+PL	Cześć wszystkim, czy ktoś słyszy mój węzeł w okolicy Krakowa?
+PL	Czesc wszystkim, czy ktos slyszy moj wezel w okolicy Krakowa?
+PL	Dzień dobry, mam nowy node na dachu, proszę o test.
+PL	Ktoś odbiera? Testuję antenę na balkonie.
+PL	Ktos odbiera? Testuje antene na balkonie.
+PL	Jaki macie zasięg z tego wzgórza? U mnie około 15 km.
+PL	Dzięki za odpowiedź, spróbuję jutro rano jeszcze raz.
+PL	Pozdrawiam z Warszawy, węzeł solarny działa już tydzień.
+PL	Nie wiem czy to dziala, ale probuje wyslac wiadomosc.
+# ---- Slovak ----
+SK	Ahojte, má niekto z vás repeater niekde na Zobore pri Nitre?
+SK	Ahojte, ma niekto z vas repeater niekde na Zobore pri Nitre?
+SK	Dobrý deň, počuje ma niekto z Bratislavy? Testujem novú anténu.
+SK	Dobry den, pocuje ma niekto z Bratislavy? Testujem novu antenu.
+SK	Ďakujem za odpoveď, skúsim to zajtra ráno ešte raz.
+SK	Dakujem za odpoved, skusim to zajtra rano este raz.
+SK	Mám uzol na streche, baterka vydrží asi tri dni bez slnka.
+SK	Aký máte dosah z toho kopca? U mňa je to približne 15 km.
+SK	Pozdravujem z Košíc, solárny uzol funguje už týždeň.
+# ---- German ----
+DE	Hallo zusammen, wer hat noch Empfang im Norden von Berlin?
+DE	Hallo zusammen, wer hat noch Empfang im Norden von Berlin? Hier ist alles ruhig.
+DE	Guten Morgen, ich habe einen neuen Knoten auf dem Dach, bitte um einen Test.
+DE	Hört mich jemand aus München? Ich teste gerade die neue Antenne.
+DE	Hoert mich jemand aus Muenchen? Ich teste gerade die neue Antenne.
+DE	Danke für die Antwort, ich versuche es morgen früh noch einmal.
+DE	Danke fuer die Antwort, ich versuche es morgen frueh noch einmal.
+DE	Grüße aus Wien, der Solarknoten läuft jetzt seit einer Woche.
+DE	Welche Reichweite habt ihr von dem Hügel? Bei mir sind es etwa 15 km.
